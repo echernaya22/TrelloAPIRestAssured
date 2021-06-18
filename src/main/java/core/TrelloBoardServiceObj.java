@@ -2,16 +2,20 @@ package core;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import io.restassured.RestAssured;
 import io.restassured.http.Method;
 import beans.TrelloBoard;
 import io.restassured.response.Response;
+import utils.ConfigReader;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TrelloBoardServiceObj extends BaseServiceObj {
 
-    private TrelloBoardServiceObj(Map<String, String> parameters, Method method) {
-        super(parameters, method);
+    private TrelloBoardServiceObj(Map<String, String> parameters, Method method, Map<String, String> path) {
+        super(parameters, method, path);
     }
 
     public static ApiRequestBuilder requestBuilderBoard() {
@@ -21,6 +25,7 @@ public class TrelloBoardServiceObj extends BaseServiceObj {
 
     public static class ApiRequestBuilder {
         private Map<String, String> parameters = new HashMap<>();
+        private Map<String, String> path = new HashMap<>();
         private Method requestMethod = Method.GET;
 
         public ApiRequestBuilder setMethod(Method method) {
@@ -48,8 +53,13 @@ public class TrelloBoardServiceObj extends BaseServiceObj {
             return this;
         }
 
+        public ApiRequestBuilder setBoardId(String id) {
+            path.put("id", id);
+            return this;
+        }
+
         public TrelloBoardServiceObj buildRequest() {
-            return new TrelloBoardServiceObj(parameters, requestMethod);
+            return new TrelloBoardServiceObj(parameters, requestMethod, path);
         }
 
     }
@@ -62,6 +72,5 @@ public class TrelloBoardServiceObj extends BaseServiceObj {
                 }.getType());
         return answers;
     }
-
 
 }

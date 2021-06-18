@@ -3,8 +3,10 @@ package core;
 import beans.TrelloCard;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import io.restassured.RestAssured;
 import io.restassured.http.Method;
 import io.restassured.response.Response;
+import utils.ConfigReader;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -12,8 +14,8 @@ import java.util.Map;
 
 public class TrelloCardServiceObj extends BaseServiceObj {
 
-    private TrelloCardServiceObj(Map<String, String> parameters, Method method) {
-        super(parameters, method);
+    private TrelloCardServiceObj(Map<String, String> parameters, Method method, Map<String, String> path) {
+        super(parameters, method, path);
     }
 
     public static ApiRequestBuilder requestBuilderCard() {
@@ -66,13 +68,12 @@ public class TrelloCardServiceObj extends BaseServiceObj {
         }
 
         public TrelloCardServiceObj buildRequest() {
-            return new TrelloCardServiceObj(parameters, requestMethod);
+            return new TrelloCardServiceObj(parameters, requestMethod, path);
         }
 
     }
 
     //ENDING OF BUILDER PATTERN
-
 
     public static TrelloCard getCard(Response response) {
         TrelloCard answers = new Gson()

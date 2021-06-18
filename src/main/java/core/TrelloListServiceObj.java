@@ -3,8 +3,10 @@ package core;
 import beans.TrelloList;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import io.restassured.RestAssured;
 import io.restassured.http.Method;
 import io.restassured.response.Response;
+import utils.ConfigReader;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -13,8 +15,8 @@ import java.util.Map;
 
 public class TrelloListServiceObj extends BaseServiceObj {
 
-    private TrelloListServiceObj(Map<String, String> parameters, Method method) {
-        super(parameters, method);
+    private TrelloListServiceObj(Map<String, String> parameters, Method method, Map<String, String> path) {
+        super(parameters, method, path);
     }
 
     public static ApiRequestBuilder requestBuilderList() {
@@ -52,13 +54,21 @@ public class TrelloListServiceObj extends BaseServiceObj {
         }
 
         public TrelloListServiceObj buildRequest() {
-            return new TrelloListServiceObj(parameters, requestMethod);
+            return new TrelloListServiceObj(parameters, requestMethod, path);
         }
 
+        public ApiRequestBuilder setBoardId(String boardId) {
+            path.put("id", boardId);
+            return this;
+        }
+
+        public ApiRequestBuilder setListId(String id) {
+            path.put("id", id);
+            return this;
+        }
     }
 
     //ENDING OF BUILDER PATTERN
-
 
     public static TrelloList getList(Response response) {
         TrelloList answers = new Gson()

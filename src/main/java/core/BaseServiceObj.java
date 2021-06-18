@@ -1,6 +1,6 @@
 package core;
 
-import constants.TestData;
+import constants.Endpoints;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
@@ -13,25 +13,27 @@ import java.util.Map;
 
 public class BaseServiceObj {
 
-    public static final String TRELLO_URI = TestData.TRELLO_URI;
     protected Method requestMethod;
 
     //BEGINNING OF BUILDER PATTERN
     protected Map<String, String> parameters;
+    protected Map<String, String> path;
 
-    public BaseServiceObj(Map<String, String> parameters, Method method) {
+    public BaseServiceObj(Map<String, String> parameters, Method method, Map<String, String> path) {
         this.parameters = parameters;
         this.requestMethod = method;
+        this.path = path;
     }
 
-    public Response sendRequest(String map) {
+    public Response sendRequest(String endpoint) {
         parameters.put("key", ConfigReader.getProperty("key"));
         parameters.put("token", ConfigReader.getProperty("token"));
 
         return RestAssured
                 .given(requestSpecification()).log().all()
+                .pathParams(path)
                 .queryParams(parameters)
-                .request(requestMethod ,TRELLO_URI + map)
+                .request(requestMethod, endpoint)
                 .prettyPeek();
     }
 
@@ -39,7 +41,7 @@ public class BaseServiceObj {
         return new RequestSpecBuilder()
                 .setContentType(ContentType.JSON)
                 .setAccept(ContentType.JSON)
-                .setBaseUri(TRELLO_URI)
+                .setBaseUri(Endpoints.TRELLO_URI)
                 .build();
     }
 
